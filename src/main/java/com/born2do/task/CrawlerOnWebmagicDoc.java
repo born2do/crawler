@@ -15,6 +15,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
+ * 获取WebMagic官方文档
+ *
  * @author chenhy
  * @date 2021/3/21
  */
@@ -56,6 +58,9 @@ public class CrawlerOnWebmagicDoc implements PageProcessor {
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void mainProcess() throws IOException {
         Path filePath = Paths.get(file);
+        if (Files.exists(filePath)) {
+            Files.delete(filePath);
+        }
         Files.createFile(filePath);
         Spider.create(new CrawlerOnWebmagicDoc()).addUrl(website)
                 .thread(1).addPipeline(new MarkdownPipeLine(filePath)).run();
