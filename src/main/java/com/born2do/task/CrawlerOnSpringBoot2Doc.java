@@ -59,7 +59,7 @@ public class CrawlerOnSpringBoot2Doc implements PageProcessor {
         return site;
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+//    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void mainProcess() throws IOException {
         Path filePath = Paths.get(file);
         if (Files.exists(filePath)) {

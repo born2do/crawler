@@ -15,17 +15,16 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * 获取WebMagic官方文档
  *
  * @author chenhy
- * @date 2021/3/21
+ * @date 2021/3/31
  */
 @Component
-public class CrawlerOnWebmagicDoc implements PageProcessor {
+public class CrawlerOnCSDN implements PageProcessor {
 
-    private static final String website = "http://webmagic.io/docs/zh/";
+    private static final String website = "https://blog.csdn.net/u011863024/article/details/113667634";
 
-    private static final String file = "D:\\WebmagicDoc.md";
+    private static final String file = "D:\\雷丰阳2021版SpringBoot2零基础入门全套完整版.md";
 
     private Site site = Site.me().setCharset("UTF8") // 编码格式
             .setTimeOut(1000 * 30) // 超时时间
@@ -36,13 +35,10 @@ public class CrawlerOnWebmagicDoc implements PageProcessor {
     public void process(Page page) {
         // 获取所有目录的url，并加入爬虫队列中
         if (website.equals(page.getUrl().toString())) {
-            List<String> urls = page.getHtml().xpath("//li[@class='chapter']").links().all();
-            for (String url : urls) {
-                page.addTargetRequest(url);
-            }
+                page.addTargetRequest("https://blog.csdn.net/u011863024/article/details/113667946");
         }
         // 获取内容
-        String content = page.getHtml().xpath("//section").toString();
+        String content = page.getHtml().xpath("//article[@class='baidu_pl']").toString();
         // 将获取到的内容从HTML格式转换为Markdown格式
         Remark remark = new Remark();
         content = remark.convert(content);
@@ -55,14 +51,14 @@ public class CrawlerOnWebmagicDoc implements PageProcessor {
         return site;
     }
 
-//    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     private void mainProcess() throws IOException {
         Path filePath = Paths.get(file);
         if (Files.exists(filePath)) {
             Files.delete(filePath);
         }
         Files.createFile(filePath);
-        Spider.create(new CrawlerOnWebmagicDoc()).addUrl(website)
+        Spider.create(new CrawlerOnCSDN()).addUrl(website)
                 .thread(1).addPipeline(new MarkdownPipeLine(filePath)).run();
         System.out.println("process is over!");
     }
