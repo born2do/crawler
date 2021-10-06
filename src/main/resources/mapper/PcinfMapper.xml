@@ -1,0 +1,21 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.born2do.crawler.mapper.PcinfMapper">
+
+    <sql id="columns">
+        wbname, wbsite, pgaddr, pcaddr, mdname, mdinfo,
+        artnam, resolu, issues, labels, introd, fupath
+    </sql>
+
+    <sql id="values">
+        #{wbname}, #{wbsite}, #{pgaddr}, #{pcaddr}, #{mdname}, #{mdinfo},
+        #{artnam}, #{resolu}, #{issues}, #{labels}, #{introd}, #{fupath}
+    </sql>
+
+    <insert id="insert">
+        insert into pcinf (<include refid="columns"></include>)
+        values (<include refid="values"></include>)
+    </insert>
+</mapper>

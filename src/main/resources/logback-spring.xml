@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="LOG_HOME" source="logging.path" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5p] %c: %m%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <!--discriminator鉴别器，根据filename这个key对应的value鉴别日志事件，然后委托给具体appender写日志-->
+        <discriminator>
+            <key>filename</key>
+            <defaultValue>log</defaultValue>
+        </discriminator>
+        <sift>
+            <!--具体的写日志appender，每一个filename创建一个文件-->
+            <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${LOG_HOME}/${filename}.log</file>
+                <append>true</append>
+                <encoder charset="UTF-8">
+                    <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] %logger: %msg%n</pattern>
+                </encoder>
+                <!-- 磁盘日志文件rolling策略 -->
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <FileNamePattern>${LOG_HOME}/${filename}_%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+                    <!-- 日志在磁盘上保留天数 -->
+                    <maxHistory>30</maxHistory>
+                    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                        <maxFileSize>10MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                </rollingPolicy>
+            </appender>
+        </sift>
+    </appender>
+    <!--trace、debug、info、warn、error-->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SIFT"/>
+    </root>
+</configuration>
